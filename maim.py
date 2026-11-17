@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
@@ -9,10 +11,11 @@ from aiogram.types import (
     InlineKeyboardButton,
     CallbackQuery
 )
-
-
-
-bot = Bot("9108817894:AAG8EIwURTpnpTe5lCnJLMd6VzUVF54uVOo")
+load_dotenv()
+token = os.getenv("BOT_TOKEN")
+if token is None:
+    raise ValueError("Переменная token не найдена")
+bot = Bot(token)
 dp = Dispatcher()
 
 button1 = KeyboardButton(text = "Добавить задачу")
