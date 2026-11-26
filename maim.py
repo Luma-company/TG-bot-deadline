@@ -1,3 +1,4 @@
+from task_manager import TaskManager
 import os
 from dotenv import load_dotenv
 import asyncio
@@ -17,6 +18,10 @@ if token is None:
     raise ValueError("Переменная token не найдена")
 bot = Bot(token)
 dp = Dispatcher()
+manager = TaskManager()
+
+manager.add_task(1, "Первая")
+manager.add_task(2, "Вторая")
 
 button1 = KeyboardButton(text = "Добавить задачу")
 button2 = KeyboardButton(text = "Список задач")
@@ -62,9 +67,9 @@ async def add_task(message: Message):
 
 @dp.message(F.text == "Список задач")
 async def show_tasks(message: Message):
-    await message.answer(f"Купить игры\nПодтвердите действие:",
-    reply_markup=inline_keyboard
-)
+    for task in manager.get_tasks():
+        await message.answer(task.get_info())
+
 
 @dp.message(F.text == "Помощь")
 async def show_help(message: Message):
@@ -79,6 +84,7 @@ async def carry(callback: CallbackQuery):
 async def delete(callback: CallbackQuery):
     await callback.message.edit_text("Удалено")
     await callback.answer()
+
 
 async def main():
     await dp.start_polling(bot)
